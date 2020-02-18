@@ -11,7 +11,7 @@ namespace lemonadeStand
         public string name;
         public double price;
         public int quantity;
-
+        public int recipeQuantity;
         public Item()
         {
 

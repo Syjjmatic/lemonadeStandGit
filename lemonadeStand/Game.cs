@@ -9,10 +9,13 @@ namespace lemonadeStand
     class Game
     {
         string captureInput;
+        string weather;
         bool startMenuLoop;
         bool playMenuLoop;
         int dayCount;
         int itemsWanted;
+        int temperature;
+        double costToPlayer;
         Player player;
         Store store;
 
@@ -59,17 +62,20 @@ namespace lemonadeStand
         {
             Console.Clear();
             Day day = new Day();
+            weather = day.weather;
+            temperature = day.temperature;
+
             while (playMenuLoop == true)
             {
                 Console.Clear();
-                UserInterface.WeatherDisplay(dayCount, day.weather, day.temperature);
+                UserInterface.WeatherDisplay(dayCount, weather, temperature);
                 UserInterface.DrawPlayMenu();
                 captureInput = Console.ReadLine();
                 while (captureInput != "1" && captureInput != "2" && captureInput != "3" && captureInput != "4")
                 {
                     Console.Clear();
                     UserInterface.InputErrorDisplay();
-                    UserInterface.WeatherDisplay(dayCount, day.weather, day.temperature);
+                    UserInterface.WeatherDisplay(dayCount, weather, temperature);
                     UserInterface.DrawPlayMenu();
                     captureInput = Console.ReadLine();
                 }
@@ -146,7 +152,31 @@ namespace lemonadeStand
             }
         }
         void SetRecipe()
-        {
+        {            
+            for (int i = 0; i < player.inventory.items.Count; i++)
+            {
+                Console.Clear();
+                UserInterface.WeatherDisplay(dayCount, weather, temperature);
+                bool userInputIsAnInteger;
+                int quantityOfItem;
+
+                if (player.inventory.items[i].name == "cup")
+                {
+                    i++;
+                }
+                UserInterface.CreateLemonadeRecipeDisplay(player.inventory.items[i].name);
+                userInputIsAnInteger = Int32.TryParse(Console.ReadLine(), out quantityOfItem);
+                while (!userInputIsAnInteger || quantityOfItem < 1)
+                {
+                    Console.Clear();
+                    UserInterface.WeatherDisplay(dayCount, weather, temperature);
+                    UserInterface.InputErrorDisplay();
+                    UserInterface.CreateLemonadeRecipeDisplay(player.inventory.items[i].name);
+                    userInputIsAnInteger = Int32.TryParse(Console.ReadLine(), out quantityOfItem);
+                }
+                player.inventory.items[i].recipeQuantity = quantityOfItem;
+                costToPlayer += player.inventory.items[i].recipeQuantity * player.inventory.items[i].price;
+            }
 
         }
         void SellLemonade()

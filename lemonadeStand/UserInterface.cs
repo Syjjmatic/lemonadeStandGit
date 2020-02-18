@@ -103,5 +103,11 @@ namespace lemonadeStand
         {
             Console.WriteLine("You don't have enough money to do that!\n");
         }
+        public static void CreateLemonadeRecipeDisplay(string name)
+        {
+            Console.WriteLine("Create lemonade recipe:\n\n" +
+                "How many " + name + "s are in a cup of lemonade?");
+
+        }
     }
 }
