@@ -19,9 +19,9 @@ namespace lemonadeStand
             "3.) Go to your stand and sell\n" +
             "4.) View your inventory\n" +
             "5.) Exit";
-        static string inputError = "Incorrect input. Try again.";
+        static string inputError = "Incorrect input. Try again.\n";
         static string rules = "The rules";
-        static string pressEnterToContinue = "\nPress [ENTER] to continue.";
+        static public string pressEnterToContinue = "Press [ENTER] to continue.";          
 
         static public void GameIntroduction()
         {
@@ -36,7 +36,6 @@ namespace lemonadeStand
 
         static public void InputErrorDisplay()
         {
-            Console.Clear();
             Console.WriteLine(inputError);
         }
 
@@ -63,6 +62,46 @@ namespace lemonadeStand
         static public void DrawPlayMenu()
         {
             Console.WriteLine(playMenu);
+        }
+
+        static public void StoreProductsDisplay()
+        {
+            string buyIngredients = "THE STORE\n\n" +
+                "Available products:\n";
+            Console.WriteLine(buyIngredients);
+        }
+        public static int GetNumberOfItems(string itemsToGet)
+        {
+            bool userInputIsAnInteger;
+            int quantityOfItem;
+
+            Console.WriteLine("\nHow many " + itemsToGet + "s would you like to buy?");
+            userInputIsAnInteger = Int32.TryParse(Console.ReadLine(), out quantityOfItem);
+
+            while (!userInputIsAnInteger || quantityOfItem < 0)
+            {
+                Console.Clear();
+                InputErrorDisplay();
+                Console.WriteLine("How many " + itemsToGet + "s would you like to buy?");
+                Console.WriteLine("Please enter a positive integer (or 0 to cancel):");
+
+                userInputIsAnInteger = Int32.TryParse(Console.ReadLine(), out quantityOfItem);
+            }
+
+            return quantityOfItem;
+        }
+        public static void ItemsAddedToInventoryDisplay(string name, int amount)
+        {
+            string howManyItemsAdded = "\n" + amount + " " + name + "(s) were added to your inventory!";
+            Console.WriteLine(howManyItemsAdded);
+        }
+        public static void DisplayWalletBalance(double balance)
+        {
+            Console.WriteLine("\nAVAILABLE BALANCE: $" + balance);
+        }
+        public static void NotEnoughMoneyDisplay()
+        {
+            Console.WriteLine("You don't have enough money to do that!\n");
         }
     }
 }

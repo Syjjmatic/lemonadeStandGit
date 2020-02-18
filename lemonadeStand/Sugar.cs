@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace lemonadeStand
 {
-    class Item
+    class Sugar : Item
     {
-        public string name;
-        public double price;
-        public int quantity;
-
-        public Item()
+        public Sugar()
         {
-
+            name = "sugar cube";
+            price = 0.10;
+            quantity = 0;
         }
     }
 }
