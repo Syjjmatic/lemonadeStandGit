@@ -29,18 +29,30 @@ namespace lemonadeStand
             Console.WriteLine(starterMenu);
         }
 
-        static public void InputError()
+        static public void InputErrorDisplay()
         {
             Console.Clear();
             Console.WriteLine(inputError);
         }
 
-        static public void Rules()
+        static public void RulesDisplay()
         {
             Console.Clear();
             Console.WriteLine(rules);
             Console.WriteLine(pressEnterToContinue);
             Console.ReadLine();
+        }
+
+        static public void HowManyDays()
+        {
+            string howManyDays = "How many days do you want to play?";
+            Console.WriteLine(howManyDays);
+        }
+
+        static public void WeatherDisplay(int dayInt, string weather, int temperature)
+        {
+            string weatherDisplay = "Day " + dayInt + ": " + weather + ", " + temperature;
+            Console.WriteLine(weatherDisplay);
         }
     }
 }
