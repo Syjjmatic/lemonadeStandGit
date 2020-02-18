@@ -9,19 +9,22 @@ namespace lemonadeStand
     class Game
     {
         string captureInput;
-        bool keepLoop;
+        bool startMenuLoop;
+        bool playMenuLoop;
         int dayCount;
 
         public Game()
         {
-            keepLoop = true;
+            startMenuLoop = true;
+            playMenuLoop = true;
             dayCount = 1;
         }
 
         void StarterMenuInput()
         {
-            while (keepLoop == true)
+            while (startMenuLoop)
             {
+                Console.Clear();
                 UserInterface.DrawStarterMenu();
                 captureInput = Console.ReadLine();
                 while (captureInput != "1" && captureInput != "2" && captureInput != "3")
@@ -30,8 +33,8 @@ namespace lemonadeStand
                 }
                 if (captureInput == "1")
                 {
-                    keepLoop = false;
-                    PlayGame();                    
+                    startMenuLoop = false;
+                    PlayGameMenuInput();                    
                 }
                 else if (captureInput == "2")
                 {
@@ -44,18 +47,64 @@ namespace lemonadeStand
             }
         }
 
-        void PlayGame()
+        void PlayGameMenuInput()
         {
             Console.Clear();
             Day day = new Day();
-            UserInterface.WeatherDisplay(dayCount, day.weather, day.temperature);
+            while (playMenuLoop == true)
+            {
+                UserInterface.WeatherDisplay(dayCount, day.weather, day.temperature);
+                UserInterface.DrawPlayMenu();
+                captureInput = Console.ReadLine();
+                while (captureInput != "1" && captureInput != "2" && captureInput != "3" && captureInput != "4")
+                {
+                    UserInterface.InputErrorDisplay();
+                }
+                if (captureInput == "1")
+                {
+                    BuyIngredients();
+                }
+                else if (captureInput == "2")
+                {
+                    SetRecipe();
+                }
+                else if (captureInput == "3")
+                {
+                    SellLemonade();
+                }
+                else if (captureInput == "4")
+                {
+                    ViewInventory();
+                }
+                else if (captureInput == "5")
+                {
+                    Environment.Exit(0);
+                }
+            }
+        }
+
+        void BuyIngredients()
+        {
+            Console.Clear();
+
+        }
+        void SetRecipe()
+        {
+
+        }
+        void SellLemonade()
+        {
+
+        }
+
+        void ViewInventory()
+        {
 
         }
 
         public void Initialize()
         {
-            UserInterface.GameIntroduction();
-            UserInterface.DrawStarterMenu();
+            UserInterface.GameIntroduction();;
             StarterMenuInput();
             Console.ReadLine();
         }

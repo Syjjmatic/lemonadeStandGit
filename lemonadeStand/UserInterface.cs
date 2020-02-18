@@ -13,6 +13,12 @@ namespace lemonadeStand
             "1.) Play\n" +
             "2.) See rules\n" +
             "3.) Exit";
+        static string playMenu = "What would you like to do?\n" +
+            "1.) Buy ingredients\n" +
+            "2.) Set/change recipe\n" +
+            "3.) Go to your stand and sell\n" +
+            "4.) View your inventory\n" +
+            "5.) Exit";
         static string inputError = "Incorrect input. Try again.";
         static string rules = "The rules";
         static string pressEnterToContinue = "\nPress [ENTER] to continue.";
@@ -25,7 +31,6 @@ namespace lemonadeStand
 
         static public void DrawStarterMenu()
         {
-            Console.Clear();
             Console.WriteLine(starterMenu);
         }
 
@@ -52,7 +57,12 @@ namespace lemonadeStand
         static public void WeatherDisplay(int dayInt, string weather, int temperature)
         {
             string weatherDisplay = "Day " + dayInt + ": " + weather + ", " + temperature;
-            Console.WriteLine(weatherDisplay);
+            Console.WriteLine(weatherDisplay + "\n");
+        }
+
+        static public void DrawPlayMenu()
+        {
+            Console.WriteLine(playMenu);
         }
     }
 }
