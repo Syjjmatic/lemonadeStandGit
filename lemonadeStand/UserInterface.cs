@@ -109,5 +109,9 @@ namespace lemonadeStand
                 "How many " + name + "s are in a cup of lemonade?");
 
         }
+        public static void StorePriceDisplay(string name, double price)
+        {
+            Console.WriteLine(name + ": $" + price);
+        }
     }
 }

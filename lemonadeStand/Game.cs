@@ -108,7 +108,7 @@ namespace lemonadeStand
             UserInterface.StoreProductsDisplay();
             for (int i = 0; i < store.items.Count; i++)
             {
-                Console.WriteLine(store.items[i].name.ToUpper() + ": $" + store.items[i].price); 
+                UserInterface.StorePriceDisplay(store.items[i].name.ToUpper(), store.items[i].price);
             }
         }
 
@@ -151,6 +151,7 @@ namespace lemonadeStand
                 Console.ReadLine();
             }
         }
+
         void SetRecipe()
         {            
             for (int i = 0; i < player.inventory.items.Count; i++)
@@ -179,6 +180,7 @@ namespace lemonadeStand
             }
 
         }
+
         void SellLemonade()
         {
 
