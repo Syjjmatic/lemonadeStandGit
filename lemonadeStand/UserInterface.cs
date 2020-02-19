@@ -38,7 +38,7 @@ namespace lemonadeStand
             System.Threading.Thread.Sleep(1500);
         }
 
-        static public void DrawStarterMenu()
+        static public void DrawStarterMenu() //SOLID PRINCIPLE HIGHLIGHT (S)
         {
             Console.WriteLine(starterMenu);
         }
@@ -239,5 +239,6 @@ namespace lemonadeStand
             Console.ReadLine();
             Environment.Exit(0);
         }
+
     }
 }
