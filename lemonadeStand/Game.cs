@@ -19,6 +19,7 @@ namespace lemonadeStand
         int customerQuantity;
         int customerChanceToBuy;
         int customerPurchased;
+        int daysToPlay;
         double playerLemonadePrice;
         double costToPlayer;
         double todayProfit;
@@ -32,10 +33,9 @@ namespace lemonadeStand
             player = new Player();
             store = new Store();
             startMenuLoop = true;
-            playMenuLoop = true;
             dayCount = 1;
             customers = new List<Customer>();
-            playerLemonadePrice = 1.00;
+            playerLemonadePrice = 0;
             customerPurchased = 0;
         }
 
@@ -55,6 +55,9 @@ namespace lemonadeStand
                 }
                 if (captureInput == "1")
                 {
+                    Console.Clear();
+                    Console.WriteLine("How many days do you want to play?");
+                    daysToPlay = Convert.ToInt32(Console.ReadLine());
                     startMenuLoop = false;
                     PlayGameMenuInput();                    
                 }
@@ -72,53 +75,93 @@ namespace lemonadeStand
         void PlayGameMenuInput()
         {
             Console.Clear();
-            Day day = new Day();
-            weather = day.weather;
-            temperature = day.temperature;
-
-            while (playMenuLoop == true)
+            for (int i = 0; i < daysToPlay; i++)
             {
-                Console.Clear();
-                UserInterface.WeatherDisplay(dayCount, weather, temperature);
-                UserInterface.DrawPlayMenu();
-                captureInput = Console.ReadLine();
-                while (captureInput != "1" && captureInput != "2" && captureInput != "3" && captureInput != "4" && captureInput != "5" && captureInput != "6" && captureInput != "7")
+                playMenuLoop = true;
+                Day day = new Day();
+                weather = day.weather;
+                temperature = day.temperature;
+
+                while (playMenuLoop == true)
                 {
                     Console.Clear();
-                    UserInterface.InputErrorDisplay();
                     UserInterface.WeatherDisplay(dayCount, weather, temperature);
                     UserInterface.DrawPlayMenu();
                     captureInput = Console.ReadLine();
+                    while (captureInput != "1" && captureInput != "2" && captureInput != "3" && captureInput != "4" && captureInput != "5" && captureInput != "6" && captureInput != "7")
+                    {
+                        Console.Clear();
+                        UserInterface.InputErrorDisplay();
+                        UserInterface.WeatherDisplay(dayCount, weather, temperature);
+                        UserInterface.DrawPlayMenu();
+                        captureInput = Console.ReadLine();
+                    }
+                    if (captureInput == "1")
+                    {
+                        BuyIngredients();
+                    }
+                    else if (captureInput == "2")
+                    {
+                        SellIngredients();
+                    }
+                    else if (captureInput == "3")
+                    {
+                        SetRecipe();
+                    }
+                    else if (captureInput == "4")
+                    {
+                        SetLemonadePrice();
+                    }
+                    else if (captureInput == "5")
+                    {
+                        for (int j = 0; j < player.inventory.items.Count; j++)
+                        {
+                            if (playerLemonadePrice == 0)
+                            {
+                                Console.Clear();
+                                Console.WriteLine("You can't start selling until you've set a price for your lemonade!\n");
+                                Console.WriteLine(UserInterface.pressEnterToContinue);
+                                Console.ReadLine();
+                                break;
+                            }
+                            else if (player.inventory.items[j].recipeQuantity == 0)
+                            {
+                                Console.Clear();
+                                Console.WriteLine("You can't start selling until you've set a recipe!\n");
+                                Console.WriteLine(UserInterface.pressEnterToContinue);
+                                Console.ReadLine();
+                                break;
+                            }
+                            else if (player.inventory.items[j].quantity < player.inventory.items[j].recipeQuantity)
+                            {
+                                Console.Clear();
+                                Console.WriteLine("You don't have enough items to start selling! Head to the store to buy more!\n");
+                                Console.WriteLine(UserInterface.pressEnterToContinue);
+                                Console.ReadLine();
+                                break;
+                            }
+                            else
+                            {
+                                SellLemonade();
+                                playMenuLoop = false;
+                                dayCount++;
+                                break;
+                            }
+                        }
+                    }
+                    else if (captureInput == "6")
+                    {
+                        ViewInventory();
+                    }
+                    else if (captureInput == "7")
+                    {
+                        Environment.Exit(0);
+                    }
                 }
-                if (captureInput == "1")
-                {
-                    BuyIngredients();
-                }
-                else if (captureInput == "2")
-                {
-                    SellIngredients();
-                }
-                else if (captureInput == "3")
-                {
-                    SetRecipe();
-                }
-                else if (captureInput == "4")
-                {
-                    SetLemonadePrice();
-                }
-                else if (captureInput == "5")
-                {
-                    SellLemonade();
-                }
-                else if (captureInput == "6")
-                {
-                    ViewInventory();
-                }
-                else if (captureInput == "7")
-                {
-                    Environment.Exit(0);
-                }
+
+
             }
+
         }
 
         void DisplayIngredients(double moneyModifier)
@@ -213,7 +256,8 @@ namespace lemonadeStand
         }
 
         void SetRecipe()
-        {            
+        {
+            costToPlayer = 0;
             for (int i = 0; i < player.inventory.items.Count; i++)
             {
                 Console.Clear();
@@ -225,6 +269,7 @@ namespace lemonadeStand
                 {
                     i++;
                 }
+
                 UserInterface.CreateLemonadeRecipeDisplay(player.inventory.items[i].name);
                 userInputIsAnInteger = Int32.TryParse(Console.ReadLine(), out quantityOfItem);
                 while (!userInputIsAnInteger || quantityOfItem < 1)
@@ -236,7 +281,6 @@ namespace lemonadeStand
                     userInputIsAnInteger = Int32.TryParse(Console.ReadLine(), out quantityOfItem);
                 }
                 player.inventory.items[i].recipeQuantity = quantityOfItem;
-                costToPlayer += player.inventory.items[i].recipeQuantity * player.inventory.items[i].price;
             }
 
         }
@@ -381,11 +425,20 @@ namespace lemonadeStand
 
         void CustomerPurchaseDetermination()
         {
-            customerPurchased = 0;
+            Console.Clear();
+            customerPurchased = 0; //TRYING TO DETERMINE WHETHER PLAYER HAS ENOUGH TO KEEP SELLING WHILE SALE IS HAPPENING
+
             for (int i = 0; i < customers.Count; i++)
-            {                
+            {
                 int random = RNG.rng.Next(10);
-                if (customerChanceToBuy == 100)
+                if (player.inventory.items[0].quantity < player.inventory.items[0].recipeQuantity ||
+                    player.inventory.items[1].quantity < player.inventory.items[1].recipeQuantity ||
+                    player.inventory.items[2].quantity < player.inventory.items[2].recipeQuantity ||
+                    player.inventory.items[3].quantity < player.inventory.items[3].recipeQuantity)
+                {
+                    break;
+                }
+                else if (customerChanceToBuy == 100)
                 {
                     CustomerBuysLemonade();
                     customerPurchased++;
@@ -456,12 +509,20 @@ namespace lemonadeStand
             CustomerPurchaseDetermination();
             ReportPurchases();
             ReportProfit();
+            SpoilIngredients();
         }
 
         void ReportPurchases()
         {
             Console.Clear();
-            Console.WriteLine(customerQuantity + " approached your stand today...");
+            Console.WriteLine(customerQuantity + " approached your stand today...\n");
+            if (player.inventory.items[0].quantity < player.inventory.items[0].recipeQuantity ||
+                player.inventory.items[1].quantity < player.inventory.items[1].recipeQuantity ||
+                player.inventory.items[2].quantity < player.inventory.items[2].recipeQuantity ||
+                player.inventory.items[3].quantity < player.inventory.items[3].recipeQuantity)
+            {
+                    Console.WriteLine("You ran out of one or more ingredients throughout the day of sales!\n");
+            }
             System.Threading.Thread.Sleep(1000);
             Console.WriteLine(customerPurchased + " customers purchased lemonade.\n");
             Console.WriteLine(UserInterface.pressEnterToContinue);
@@ -470,6 +531,10 @@ namespace lemonadeStand
 
         void ReportProfit()
         {
+            costToPlayer = (player.inventory.items[0].price * player.inventory.items[0].recipeQuantity) +
+                (player.inventory.items[1].price * player.inventory.items[1].recipeQuantity) +
+                (player.inventory.items[2].price * player.inventory.items[2].recipeQuantity) +
+                (player.inventory.items[3].price * player.inventory.items[3].recipeQuantity);
             Console.Clear();
             todayProfit = (playerLemonadePrice - costToPlayer) * customerPurchased;
             overallProfit += todayProfit;
@@ -482,6 +547,21 @@ namespace lemonadeStand
             Console.ReadLine();
             customers.Clear();
 
+        }
+
+        void SpoilIngredients()
+        {
+            Console.Clear();
+            for (int i = 0; i < player.inventory.items.Count; i++)
+            {
+                int amountSpoiled;
+                amountSpoiled = Convert.ToInt32(Math.Floor(player.inventory.items[i].quantity * .75));
+                player.inventory.items[i].quantity -= amountSpoiled;
+                Console.WriteLine(amountSpoiled + " of your " + player.inventory.items[i].name + "(s) spoiled!");
+                System.Threading.Thread.Sleep(300);
+            }
+            Console.WriteLine("Press [ENTER] to continue.");
+            Console.ReadLine();
         }
 
         void ViewInventory()

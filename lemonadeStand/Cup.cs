@@ -12,7 +12,8 @@ namespace lemonadeStand
         {
             name = "cup";
             price = 0.25;
-            quantity = 1;
+            quantity = 0;
+            recipeQuantity = 1;
         }
     }
 }
