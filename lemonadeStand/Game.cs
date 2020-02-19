@@ -15,9 +15,13 @@ namespace lemonadeStand
         int dayCount;
         int itemsWanted;
         int temperature;
+        int customerQuantity;
+        int customerChanceToBuy;
+        double playerLemonadePrice;
         double costToPlayer;
         Player player;
         Store store;
+        List<Customer> customers;
 
         public Game()
         {
@@ -26,6 +30,7 @@ namespace lemonadeStand
             startMenuLoop = true;
             playMenuLoop = true;
             dayCount = 1;
+            customers = new List<Customer>;
         }
 
         void StarterMenuInput()
@@ -179,6 +184,56 @@ namespace lemonadeStand
                 costToPlayer += player.inventory.items[i].recipeQuantity * player.inventory.items[i].price;
             }
 
+        }
+
+        void SetLemonadePrice()
+        {
+
+        }
+        
+        void CustomerChanceToBuy()
+        {
+            if (playerLemonadePrice > 4.00)
+            {
+                customerChanceToBuy = 0;
+            }
+        }
+
+        void CustomerCreation()
+        {
+            if (weather == "Sunny" && temperature >= 100)
+            {
+                customerQuantity = RNG.rng.Next(20, 30);
+            }
+            else if ((weather == "Sunny" && temperature >= 90) || (weather == "Cloudy" && temperature >= 100))
+            {
+                customerQuantity = RNG.rng.Next(15, 25);
+            }
+            else if ((weather == "Sunny" && temperature >= 80) || (weather == "Cloudy" && temperature >= 90) || (weather == "Rainy" && temperature >= 100))
+            {
+                customerQuantity = RNG.rng.Next(12, 22);
+            }
+            else if ((weather == "Sunny" && temperature >= 70) || (weather == "Cloudy" && temperature >= 80) || (weather == "Rainy" && temperature >= 90))
+            {
+                customerQuantity = RNG.rng.Next(10, 20);
+            }
+            else if ((weather == "Sunny" && temperature >= 60) || (weather == "Cloudy" && temperature >= 70) || (weather == "Rainy" && temperature >= 80))
+            {
+                customerQuantity = RNG.rng.Next(5, 15);
+            }
+            else if ((weather == "Cloudy" && temperature >= 60) || (weather == "Rainy" && temperature >= 70))
+            {
+                customerQuantity = RNG.rng.Next(3, 8);
+            }
+            else if (weather == "Rainy" && temperature >= 60)
+            {
+                customerQuantity = RNG.rng.Next(5);
+            }
+
+            for (int i = 0; i < customerQuantity; i++)
+            {
+                customers.Add(new Customer(customerChanceToBuy));
+            }
         }
 
         void SellLemonade()

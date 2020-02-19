@@ -70,6 +70,7 @@ namespace lemonadeStand
                 "Available products:\n";
             Console.WriteLine(buyIngredients);
         }
+
         public static int GetNumberOfItems(string itemsToGet)
         {
             bool userInputIsAnInteger;
@@ -90,25 +91,30 @@ namespace lemonadeStand
 
             return quantityOfItem;
         }
+
         public static void ItemsAddedToInventoryDisplay(string name, int amount)
         {
             string howManyItemsAdded = "\n" + amount + " " + name + "(s) were added to your inventory!";
             Console.WriteLine(howManyItemsAdded);
         }
+
         public static void DisplayWalletBalance(double balance)
         {
             Console.WriteLine("\nAVAILABLE BALANCE: $" + balance);
         }
+
         public static void NotEnoughMoneyDisplay()
         {
             Console.WriteLine("You don't have enough money to do that!\n");
         }
+
         public static void CreateLemonadeRecipeDisplay(string name)
         {
             Console.WriteLine("Create lemonade recipe:\n\n" +
                 "How many " + name + "s are in a cup of lemonade?");
 
         }
+
         public static void StorePriceDisplay(string name, double price)
         {
             Console.WriteLine(name + ": $" + price);
