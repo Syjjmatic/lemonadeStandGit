@@ -14,6 +14,7 @@ namespace lemonadeStand
         bool playMenuLoop;
         int dayCount;
         int itemsWanted;
+        int itemsToSell;
         int temperature;
         int customerQuantity;
         int customerChanceToBuy;
@@ -30,7 +31,8 @@ namespace lemonadeStand
             startMenuLoop = true;
             playMenuLoop = true;
             dayCount = 1;
-            customers = new List<Customer>;
+            customers = new List<Customer>();
+            playerLemonadePrice = 1.00;
         }
 
         void StarterMenuInput()
@@ -76,7 +78,7 @@ namespace lemonadeStand
                 UserInterface.WeatherDisplay(dayCount, weather, temperature);
                 UserInterface.DrawPlayMenu();
                 captureInput = Console.ReadLine();
-                while (captureInput != "1" && captureInput != "2" && captureInput != "3" && captureInput != "4")
+                while (captureInput != "1" && captureInput != "2" && captureInput != "3" && captureInput != "4" && captureInput != "5" && captureInput != "6" && captureInput != "7")
                 {
                     Console.Clear();
                     UserInterface.InputErrorDisplay();
@@ -90,30 +92,38 @@ namespace lemonadeStand
                 }
                 else if (captureInput == "2")
                 {
-                    SetRecipe();
+                    SellIngredients();
                 }
                 else if (captureInput == "3")
                 {
-                    SellLemonade();
+                    SetRecipe();
                 }
                 else if (captureInput == "4")
                 {
-                    ViewInventory();
+                    SetLemonadePrice();
                 }
                 else if (captureInput == "5")
+                {
+                    SellLemonade();
+                }
+                else if (captureInput == "6")
+                {
+                    ViewInventory();
+                }
+                else if (captureInput == "7")
                 {
                     Environment.Exit(0);
                 }
             }
         }
 
-        void DisplayIngredients()
+        void DisplayIngredients(double moneyModifier)
         {
             Console.Clear();
             UserInterface.StoreProductsDisplay();
             for (int i = 0; i < store.items.Count; i++)
             {
-                UserInterface.StorePriceDisplay(store.items[i].name.ToUpper(), store.items[i].price);
+                UserInterface.StorePriceDisplay(store.items[i].name.ToUpper(), Math.Round(store.items[i].price * moneyModifier, 2));
             }
         }
 
@@ -122,9 +132,19 @@ namespace lemonadeStand
             player.inventory.items[i].quantity += itemsWanted;
         }
 
-        void RemoveMoneyFromWallet(int i)
+        void RemoveItemsFromInventory (int i)
         {
-            player.inventory.walletBalance -= (itemsWanted * store.items[i].price);
+            player.inventory.items[i].quantity -= itemsToSell;
+        }
+
+        void RemoveMoneyFromWallet(int i, double moneyModifier)
+        {
+            player.inventory.walletBalance -= itemsWanted * store.items[i].price * moneyModifier;
+        }
+
+        void AddMoneyToWallet(int i, double moneyModifier)
+        {
+            player.inventory.walletBalance += Math.Round(itemsToSell * store.items[i].price * moneyModifier, 2);
         }
 
         void BuyIngredients()
@@ -132,29 +152,60 @@ namespace lemonadeStand
             for (int i = 0; i < store.items.Count; i++)
             {
                 Console.Clear();
-                DisplayIngredients();
+                DisplayIngredients(1);
                 UserInterface.DisplayWalletBalance(player.inventory.walletBalance);
-                itemsWanted = UserInterface.GetNumberOfItems(store.items[i].name);
+                itemsWanted = UserInterface.GetNumberOfItems(store.items[i].name, player.inventory.items[i].quantity);
                 while (player.inventory.walletBalance < (itemsWanted * store.items[i].price))
                 {
                     Console.Clear();
                     UserInterface.NotEnoughMoneyDisplay();
                     Console.WriteLine(UserInterface.pressEnterToContinue);
                     Console.ReadLine();
-                    DisplayIngredients();
+                    DisplayIngredients(1);
                     UserInterface.DisplayWalletBalance(player.inventory.walletBalance);
-                    itemsWanted = UserInterface.GetNumberOfItems(store.items[i].name);
+                    itemsWanted = UserInterface.GetNumberOfItems(store.items[i].name, player.inventory.items[i].quantity);
                 }
                 AddItemsToInventory(i);
-                RemoveMoneyFromWallet(i);
+                RemoveMoneyFromWallet(i, 1);
                 
                 Console.Clear();
-                DisplayIngredients();
+                DisplayIngredients(1);
                 UserInterface.DisplayWalletBalance(player.inventory.walletBalance);
                 UserInterface.ItemsAddedToInventoryDisplay(player.inventory.items[i].name, itemsWanted);
                 Console.WriteLine(UserInterface.pressEnterToContinue);
                 Console.ReadLine();
             }
+        }
+
+        void SellIngredients()
+        {
+            for (int i = 0; i < store.items.Count; i++)
+            {
+                Console.Clear();
+                DisplayIngredients(.5);
+                UserInterface.DisplayWalletBalance(player.inventory.walletBalance);
+                itemsToSell = UserInterface.SellNumberOfItems(store.items[i].name, player.inventory.items[i].quantity);
+                while (itemsToSell > player.inventory.items[i].quantity)
+                {
+                    Console.Clear();
+                    Console.WriteLine("You don't have that many items to sell!");
+                    Console.WriteLine(UserInterface.pressEnterToContinue);
+                    Console.ReadLine();
+                    DisplayIngredients(.5);
+                    UserInterface.DisplayWalletBalance(player.inventory.walletBalance);
+                    itemsToSell = UserInterface.SellNumberOfItems(store.items[i].name, player.inventory.items[i].quantity);
+                }
+                RemoveItemsFromInventory(i);
+                AddMoneyToWallet(i, .5);
+
+                Console.Clear();
+                DisplayIngredients(.5);
+                UserInterface.DisplayWalletBalance(player.inventory.walletBalance);
+                UserInterface.ItemsRemovedFromInventoryDisplay(player.inventory.items[i].name, itemsToSell);
+                Console.WriteLine(UserInterface.pressEnterToContinue);
+                Console.ReadLine();
+            }
+
         }
 
         void SetRecipe()
@@ -188,7 +239,9 @@ namespace lemonadeStand
 
         void SetLemonadePrice()
         {
-
+            Console.Clear();
+            UserInterface.WeatherDisplay(dayCount, weather, temperature);
+            playerLemonadePrice = UserInterface.GetPriceOfLemonade(playerLemonadePrice);
         }
         
         void CustomerChanceToBuy()
@@ -322,6 +375,7 @@ namespace lemonadeStand
         {
             Console.Clear();
             Console.WriteLine("PLAYER INVENTORY\n");
+            Console.WriteLine("Wallet balance: $" + player.inventory.walletBalance + "\n");
             for (int i = 0; i < player.inventory.items.Count; i++)
             {
                 Console.WriteLine(player.inventory.items[i].name.ToUpper() + "S: " + player.inventory.items[i].quantity);
