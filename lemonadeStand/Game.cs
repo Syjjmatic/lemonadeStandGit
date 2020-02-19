@@ -197,6 +197,83 @@ namespace lemonadeStand
             {
                 customerChanceToBuy = 0;
             }
+            else if (weather == "Sunny" && temperature >= 100)
+            {
+                if (playerLemonadePrice <= 3.00)
+                {
+                    customerChanceToBuy = 100;
+                }
+                else
+                {
+                    customerChanceToBuy = 85;
+                }
+            }
+            else if ((weather == "Sunny" && temperature >= 90) || (weather == "Cloudy" && temperature >= 100))
+            {
+                if (playerLemonadePrice <= 2.50)
+                {
+                    customerChanceToBuy = 95;
+                }
+                else
+                {
+                    customerChanceToBuy = 80;
+                }
+            }
+            else if ((weather == "Sunny" && temperature >= 80) || (weather == "Cloudy" && temperature >= 90) || (weather == "Rainy" && temperature >= 100))
+            {
+                if (playerLemonadePrice <= 2.00)
+                {
+                    customerChanceToBuy = 95;
+                }
+                else
+                {
+                    customerChanceToBuy = 80;
+                }
+            }
+            else if ((weather == "Sunny" && temperature >= 70) || (weather == "Cloudy" && temperature >= 80) || (weather == "Rainy" && temperature >= 90))
+            {
+                if (playerLemonadePrice <= 2.00)
+                {
+                    customerChanceToBuy = 85;
+                }
+                else
+                {
+                    customerChanceToBuy = 70;
+                }
+            }
+            else if ((weather == "Sunny" && temperature >= 60) || (weather == "Cloudy" && temperature >= 70) || (weather == "Rainy" && temperature >= 80))
+            {
+                if (playerLemonadePrice <= 1.85)
+                {
+                    customerChanceToBuy = 85;
+                }
+                else
+                {
+                    customerChanceToBuy = 70;
+                }
+            }
+            else if ((weather == "Cloudy" && temperature >= 60) || (weather == "Rainy" && temperature >= 70))
+            {
+                if (playerLemonadePrice <= 1.50)
+                {
+                    customerChanceToBuy = 80;
+                }
+                else
+                {
+                    customerChanceToBuy = 50;
+                }
+            }
+            else if (weather == "Rainy" && temperature >= 60)
+            {
+                if (playerLemonadePrice <= 1.25)
+                {
+                    customerChanceToBuy = 75;
+                }
+                else
+                {
+                    customerChanceToBuy = 40;
+                }
+            }
         }
 
         void CustomerCreation()
