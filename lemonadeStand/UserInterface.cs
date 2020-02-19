@@ -22,7 +22,14 @@ namespace lemonadeStand
             "6.) View your inventory\n" +
             "7.) Exit";
         static string inputError = "Incorrect input. Try again.\n";
-        static string rules = "The rules";
+        static string rules = "Here are the basic rules in which you will operate:\n\n" +
+                "1.) Player sets how many days he/she would like to sell lemonade for.\n" +
+                "2.) Player starts with $20.00 to purchase ingredients (lemons, cups, sugar cubes, and ice cubes)\n" +
+                "3.) Player brings ingredients to lemonade stand to try and sell lemonade to customers.\n" +
+                "4.) Weather and temperature will be set at random for each day of sales. Player sets price of lemonade.\n" +
+                "5.) Weather, temperature, and lemonade price will affect a customer's interest in buying lemonade.\n" +
+                "6.) The more lemonade the stand is able to sell, the more successful the player's business is.\n" +
+                "7.) If player runs out of money, player loses.\n";
         static public string pressEnterToContinue = "Press [ENTER] to continue.";
 
         static public void GameIntroduction()
@@ -204,12 +211,33 @@ namespace lemonadeStand
 
         public static int HowManyDaysDoYouWantToPlay()
         {
+            bool userInputIsAnInteger;
             int daysToPlay;
-            string askForDays = "How many days do you want to play?";
+
             Console.Clear();
-            Console.WriteLine(askForDays);
-            daysToPlay = Convert.ToInt32(Console.ReadLine());
+            Console.WriteLine("How many days do you want to play?");
+            userInputIsAnInteger = Int32.TryParse(Console.ReadLine(), out daysToPlay);
+
+            while (!userInputIsAnInteger || daysToPlay < 1 || daysToPlay > Int32.MaxValue)
+            {
+                Console.Clear();
+                InputErrorDisplay();
+                Console.WriteLine("How many days do you want to play?");
+
+                userInputIsAnInteger = Int32.TryParse(Console.ReadLine(), out daysToPlay);
+            }
+
             return daysToPlay;
+        }
+
+        public static void GameOver()
+        {
+            Console.WriteLine("You are unable to purchase sufficient ingredients to continue selling.\n" +
+                "Your business has failed.\n\n" +
+                "GAME OVER.\n");
+            Console.WriteLine("Press [ENTER] to exit.");
+            Console.ReadLine();
+            Environment.Exit(0);
         }
     }
 }
