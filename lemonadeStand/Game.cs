@@ -46,6 +46,7 @@ namespace lemonadeStand
                 Console.Clear();
                 UserInterface.DrawStarterMenu();
                 captureInput = Console.ReadLine();
+
                 while (captureInput != "1" && captureInput != "2" && captureInput != "3")
                 {
                     Console.Clear();
@@ -53,11 +54,10 @@ namespace lemonadeStand
                     UserInterface.DrawStarterMenu();
                     captureInput = Console.ReadLine();
                 }
+
                 if (captureInput == "1")
                 {
-                    Console.Clear();
-                    Console.WriteLine("How many days do you want to play?");
-                    daysToPlay = Convert.ToInt32(Console.ReadLine());
+                    daysToPlay = UserInterface.HowManyDaysDoYouWantToPlay();
                     startMenuLoop = false;
                     PlayGameMenuInput();                    
                 }
@@ -72,9 +72,22 @@ namespace lemonadeStand
             }
         }
 
+        void CheckForGameOver()
+        {
+            for (int i = 0; i < player.inventory.items.Count; i++)
+            {
+                if (player.inventory.walletBalance < (player.inventory.items[i].price * (player.inventory.items[i].recipeQuantity - player.inventory.items[i].quantity))
+                    && player.inventory.items[i].quantity < player.inventory.items[i].recipeQuantity)
+                {
+                    UserInterface.GameOver();
+                }
+            }
+        }
         void PlayGameMenuInput()
         {
             Console.Clear();
+            CheckForGameOver();
+
             for (int i = 0; i < daysToPlay; i++)
             {
                 playMenuLoop = true;
@@ -118,26 +131,17 @@ namespace lemonadeStand
                         {
                             if (playerLemonadePrice == 0)
                             {
-                                Console.Clear();
-                                Console.WriteLine("You can't start selling until you've set a price for your lemonade!\n");
-                                Console.WriteLine(UserInterface.pressEnterToContinue);
-                                Console.ReadLine();
+                                UserInterface.CantSellWithoutPrice();
                                 break;
                             }
                             else if (player.inventory.items[j].recipeQuantity == 0)
                             {
-                                Console.Clear();
-                                Console.WriteLine("You can't start selling until you've set a recipe!\n");
-                                Console.WriteLine(UserInterface.pressEnterToContinue);
-                                Console.ReadLine();
+                                UserInterface.CantSellWithoutRecipe();
                                 break;
                             }
                             else if (player.inventory.items[j].quantity < player.inventory.items[j].recipeQuantity)
                             {
-                                Console.Clear();
-                                Console.WriteLine("You don't have enough items to start selling! Head to the store to buy more!\n");
-                                Console.WriteLine(UserInterface.pressEnterToContinue);
-                                Console.ReadLine();
+                                UserInterface.CantSellWithoutItems();
                                 break;
                             }
                             else
@@ -426,7 +430,7 @@ namespace lemonadeStand
         void CustomerPurchaseDetermination()
         {
             Console.Clear();
-            customerPurchased = 0; //TRYING TO DETERMINE WHETHER PLAYER HAS ENOUGH TO KEEP SELLING WHILE SALE IS HAPPENING
+            customerPurchased = 0;
 
             for (int i = 0; i < customers.Count; i++)
             {
@@ -581,7 +585,7 @@ namespace lemonadeStand
         {
             UserInterface.GameIntroduction();
             StarterMenuInput();
-            Console.ReadLine();
+            UserInterface.EndGame();
         }
     }
 }

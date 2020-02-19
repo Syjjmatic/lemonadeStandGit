@@ -49,12 +49,6 @@ namespace lemonadeStand
             Console.ReadLine();
         }
 
-        static public void HowManyDays()
-        {
-            string howManyDays = "How many days do you want to play?";
-            Console.WriteLine(howManyDays);
-        }
-
         static public void WeatherDisplay(int dayInt, string weather, int temperature)
         {
             string weatherDisplay = "Day " + dayInt + ": " + weather + ", " + temperature;
@@ -170,6 +164,52 @@ namespace lemonadeStand
             }
 
             return quantityOfItem;
+        }
+
+        public static void EndGame()
+        {
+            Console.Clear();
+            Console.WriteLine("Welp, it looks like you made it to the end.\n" +
+                "Congrats to you, you do-gooder.\n\n" +
+                "Now get outta here, ya filthy animal.\n");
+            Console.WriteLine("Press [ENTER] to exit.");
+            Console.ReadLine();
+            Environment.Exit(0);
+
+        }
+
+        public static void CantSellWithoutPrice()
+        {
+            Console.Clear();
+            Console.WriteLine("You can't start selling until you've set a price for your lemonade!\n");
+            Console.WriteLine(pressEnterToContinue);
+            Console.ReadLine();
+        }
+
+        public static void CantSellWithoutRecipe()
+        {
+            Console.Clear();
+            Console.WriteLine("You can't start selling until you've set a recipe!\n");
+            Console.WriteLine(pressEnterToContinue);
+            Console.ReadLine();
+        }
+
+        public static void CantSellWithoutItems()
+        {
+            Console.Clear();
+            Console.WriteLine("You don't have enough items to start selling! Head to the store to buy more!\n");
+            Console.WriteLine(pressEnterToContinue);
+            Console.ReadLine();
+        }
+
+        public static int HowManyDaysDoYouWantToPlay()
+        {
+            int daysToPlay;
+            string askForDays = "How many days do you want to play?";
+            Console.Clear();
+            Console.WriteLine(askForDays);
+            daysToPlay = Convert.ToInt32(Console.ReadLine());
+            return daysToPlay;
         }
     }
 }
