@@ -18,8 +18,11 @@ namespace lemonadeStand
         int temperature;
         int customerQuantity;
         int customerChanceToBuy;
+        int customerPurchased;
         double playerLemonadePrice;
         double costToPlayer;
+        double todayProfit;
+        double overallProfit;
         Player player;
         Store store;
         List<Customer> customers;
@@ -33,6 +36,7 @@ namespace lemonadeStand
             dayCount = 1;
             customers = new List<Customer>();
             playerLemonadePrice = 1.00;
+            customerPurchased = 0;
         }
 
         void StarterMenuInput()
@@ -258,14 +262,14 @@ namespace lemonadeStand
                 }
                 else
                 {
-                    customerChanceToBuy = 85;
+                    customerChanceToBuy = 90;
                 }
             }
             else if ((weather == "Sunny" && temperature >= 90) || (weather == "Cloudy" && temperature >= 100))
             {
                 if (playerLemonadePrice <= 2.50)
                 {
-                    customerChanceToBuy = 95;
+                    customerChanceToBuy = 90;
                 }
                 else
                 {
@@ -276,7 +280,7 @@ namespace lemonadeStand
             {
                 if (playerLemonadePrice <= 2.00)
                 {
-                    customerChanceToBuy = 95;
+                    customerChanceToBuy = 90;
                 }
                 else
                 {
@@ -287,7 +291,7 @@ namespace lemonadeStand
             {
                 if (playerLemonadePrice <= 2.00)
                 {
-                    customerChanceToBuy = 85;
+                    customerChanceToBuy = 80;
                 }
                 else
                 {
@@ -298,7 +302,7 @@ namespace lemonadeStand
             {
                 if (playerLemonadePrice <= 1.85)
                 {
-                    customerChanceToBuy = 85;
+                    customerChanceToBuy = 80;
                 }
                 else
                 {
@@ -320,7 +324,7 @@ namespace lemonadeStand
             {
                 if (playerLemonadePrice <= 1.25)
                 {
-                    customerChanceToBuy = 75;
+                    customerChanceToBuy = 70;
                 }
                 else
                 {
@@ -366,8 +370,117 @@ namespace lemonadeStand
             }
         }
 
+        void CustomerBuysLemonade()
+        {
+            for (int i = 0; i < player.inventory.items.Count; i++)
+            {
+                player.inventory.items[i].quantity -= player.inventory.items[i].recipeQuantity;
+            }
+            player.inventory.walletBalance += playerLemonadePrice;
+        }
+
+        void CustomerPurchaseDetermination()
+        {
+            customerPurchased = 0;
+            for (int i = 0; i < customers.Count; i++)
+            {                
+                int random = RNG.rng.Next(10);
+                if (customerChanceToBuy == 100)
+                {
+                    CustomerBuysLemonade();
+                    customerPurchased++;
+                }
+                else if (customerChanceToBuy >= 90)
+                {
+                    if (random > 1)
+                    {
+                        CustomerBuysLemonade();
+                        customerPurchased++;
+                    }
+                }
+                else if (customerChanceToBuy >= 80)
+                {
+                    if (random > 2)
+                    {
+                        CustomerBuysLemonade();
+                        customerPurchased++;
+                    }
+                }
+                else if (customerChanceToBuy >= 70)
+                {
+                    if (random > 3)
+                    {
+                        CustomerBuysLemonade();
+                        customerPurchased++;
+                    }
+                }
+                else if (customerChanceToBuy >= 60)
+                {
+                    if (random > 4)
+                    {
+                        CustomerBuysLemonade();
+                        customerPurchased++;
+                    }
+                }
+                else if (customerChanceToBuy >= 50)
+                {
+                    if (random > 5)
+                    {
+                        CustomerBuysLemonade();
+                        customerPurchased++;
+                    }
+                }
+                else if (customerChanceToBuy >= 40)
+                {
+                    if (random > 6)
+                    {
+                        CustomerBuysLemonade();
+                        customerPurchased++;
+                    }
+                }
+                else if (customerChanceToBuy >= 30)
+                {
+                    if (random > 7)
+                    {
+                        CustomerBuysLemonade();
+                        customerPurchased++;
+                    }
+                }
+            }
+        }
+
         void SellLemonade()
         {
+            CustomerChanceToBuy();
+            CustomerCreation();
+            CustomerPurchaseDetermination();
+            ReportPurchases();
+            ReportProfit();
+        }
+
+        void ReportPurchases()
+        {
+            Console.Clear();
+            Console.WriteLine(customerQuantity + " approached your stand today...");
+            System.Threading.Thread.Sleep(1000);
+            Console.WriteLine(customerPurchased + " customers purchased lemonade.\n");
+            Console.WriteLine(UserInterface.pressEnterToContinue);
+            Console.ReadLine();
+        }
+
+        void ReportProfit()
+        {
+            Console.Clear();
+            todayProfit = (playerLemonadePrice - costToPlayer) * customerPurchased;
+            overallProfit += todayProfit;
+            Console.WriteLine("Today's cost to you: $" + costToPlayer);
+            Console.WriteLine("Today's sale price: $" + playerLemonadePrice + "\n");
+            System.Threading.Thread.Sleep(1000);
+            Console.WriteLine("You made $" + todayProfit + " today!");
+            Console.WriteLine("You've made a total of $" + overallProfit + " since you started!\n");
+            Console.WriteLine(UserInterface.pressEnterToContinue);
+            Console.ReadLine();
+            customers.Clear();
 
         }
 
